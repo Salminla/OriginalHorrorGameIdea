@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
+    [SerializeField] private GameObject deathScreen;
+    [SerializeField] private GameObject finishedScreen;
     [SerializeField] private TMP_Text sprintValue;
     [SerializeField] private TMP_Text noteValue;
     [SerializeField] private Button quitButton;
@@ -29,6 +31,15 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public void ActivateEndScreen()
+    {
+        deathScreen.SetActive(true);
+    }
+
+    public void ActivateFinishedScreen()
+    {
+        finishedScreen.SetActive(true);
+    }
     void QuitGame()
     {
         Application.Quit();

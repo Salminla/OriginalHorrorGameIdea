@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 
 public class Monster : MonoBehaviour
@@ -17,7 +17,8 @@ public class Monster : MonoBehaviour
 
     void Update()
     {
-        SeekPlayer();
+        if (player != null)
+            SeekPlayer();
     }
 
     void SeekPlayer()
@@ -35,5 +36,10 @@ public class Monster : MonoBehaviour
             atPlayerPos = true;
             GameManager.instance.GameDeath();
         }
+    }
+    IEnumerator GetPlayer()
+    {
+        yield return new WaitForSeconds(3f);
+        player = FindObjectOfType<Player>();
     }
 }
