@@ -1,19 +1,36 @@
+using System.Globalization;
+using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
-    [SerializeField] private Button startButton;
+    [SerializeField] private TMP_Text sprintValue;
+    [SerializeField] private TMP_Text noteValue;
+    [SerializeField] private Button quitButton;
     
-    
-    void Start()
+    private void Start()
     {
-        startButton.onClick.AddListener(StartGame);
+        quitButton.onClick.AddListener(QuitGame);
     }
 
-    void StartGame()
+    void Update()
     {
-        SceneManager.LoadScene(1);
+        if (sprintValue != null)
+        {
+            float val = GameManager.instance.sprintStrength;
+            sprintValue.text = Mathf.RoundToInt(val).ToString();
+            sprintValue.color = val > 50 ? Color.white : Color.red;
+        }
+
+        if (noteValue != null)
+        {
+            noteValue.text = "Notes: " + GameManager.instance.noteCount;
+        }
+    }
+
+    void QuitGame()
+    {
+        Application.Quit();
     }
 }

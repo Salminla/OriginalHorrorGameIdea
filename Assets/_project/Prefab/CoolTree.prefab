@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4214349864039760746}
   - component: {fileID: 7185167478018855041}
   - component: {fileID: 5659277661091445883}
+  - component: {fileID: -3408369485931317761}
   m_Layer: 0
   m_Name: CoolTree
   m_TagString: Untagged
@@ -91,3 +92,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-3408369485931317761
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515766413865357588}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2499652062235021259, guid: ae217c18879513c459ba5790bca1315d, type: 3}

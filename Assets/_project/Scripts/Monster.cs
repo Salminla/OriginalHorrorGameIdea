@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Monster : MonoBehaviour
@@ -7,8 +8,19 @@ public class Monster : MonoBehaviour
 
     private bool atPlayerPos { set; get; }
     private Vector3 playerPos;
-    
+
+    private void Start()
+    {
+        if (player == null)
+            player = FindObjectOfType<Player>();
+    }
+
     void Update()
+    {
+        SeekPlayer();
+    }
+
+    void SeekPlayer()
     {
         playerPos = player.transform.position;
 
@@ -21,7 +33,7 @@ public class Monster : MonoBehaviour
         if (Vector3.Distance(transform.position, playerPos) < 1.5f)
         {
             atPlayerPos = true;
-            GameManager.instance.GameEnd();
+            GameManager.instance.GameDeath();
         }
     }
 }

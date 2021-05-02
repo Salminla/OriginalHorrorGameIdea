@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerMovement : MonoBehaviour
@@ -6,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 150f;
     [SerializeField] private float sprintSpeed = 200f;
     [SerializeField] private float jumpForce = 100f;
+    [SerializeField] private List<AudioClip> footSteps;
     
     private Vector3 _movement;
     private Rigidbody _rb;
@@ -31,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _movement.x = _input.correctedInput.x * moveSpeed * Time.deltaTime;
         _movement.z = _input.correctedInput.z * moveSpeed * Time.deltaTime;
+        //PlayStepSound();
         Movement();
     }
     
@@ -38,6 +41,15 @@ public class PlayerMovement : MonoBehaviour
     {
         _movement.x = _input.correctedInput.x * sprintSpeed * Time.deltaTime;
         _movement.z = _input.correctedInput.z * sprintSpeed * Time.deltaTime;
+
         Movement();
+    }
+
+    void PlayStepSound()
+    {
+        if ((Mathf.Abs(_rb.velocity.x) > 1f || Mathf.Abs(_rb.velocity.z) > 1f) && !AudioManager.instance.effectsSource.isPlaying)
+        {
+            AudioManager.instance.Play(footSteps[Random.Range(0,2)]);
+        }
     }
 }
