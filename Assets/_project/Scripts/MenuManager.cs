@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private Button startButton;
+    [SerializeField] private Button vrStartButton;
     [SerializeField] private Toggle flyToggle;
 
     private bool flyState;
@@ -13,11 +14,18 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         startButton.onClick.AddListener(StartGame);
+        vrStartButton.onClick.AddListener(StartGameVR);
         flyToggle.onValueChanged.AddListener(delegate(bool arg0) { SetFly(); });
     }
 
     void StartGame()
     {
+        SceneManager.LoadScene(1);
+        PlayerPrefs.SetInt("vr", Convert.ToInt16(false));
+    }
+    void StartGameVR()
+    {
+        PlayerPrefs.SetInt("vr", Convert.ToInt16(true));
         SceneManager.LoadScene(1);
     }
 

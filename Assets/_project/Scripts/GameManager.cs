@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,10 +13,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Spawner _spawner;
     [SerializeField] private UiManager _uiManager;
     [SerializeField] private AudioClip bgMusic;
+    [SerializeField] private VolumeProfile globalVolume;
 
     public float noteCount = 0;
     public float sprintStrength;
     public bool allowJump;
+    public bool VRActive { get; private set; }
 
     private bool gameEnd;
 
@@ -34,21 +38,31 @@ public class GameManager : MonoBehaviour
 
     private void Init()
     {
-        //Application.targetFrameRate = 30;
+        VRActive = Convert.ToBoolean(PlayerPrefs.GetInt("vr"));
+
         if (_spawner != null)
             _spawner.HandleSpawning();
         
         if (FindObjectOfType<Player>() != null)
             player = FindObjectOfType<Player>();
         
+        if (player != null)
+            InitAudio();
+
+        if (globalVolume != null && globalVolume.TryGet<FilmGrain>(out var filmGrain))
+            filmGrain.active = !VRActive;
+
+        allowJump = Convert.ToBoolean(PlayerPrefs.GetInt("fly"));
+    }
+
+    private void InitAudio()
+    {
+        if (player.GetComponent<AudioSource>() == null) return;
         AudioSource[] sources = player.GetComponents<AudioSource>();
         AudioManager.instance.musicSource = sources[0];
         AudioManager.instance.effectsSource = sources[1];
         AudioManager.instance.PlayMusic(bgMusic, true);
-        
-        allowJump = Convert.ToBoolean(PlayerPrefs.GetInt("fly"));
     }
-
     private void Update()
     {
         if (noteCount >= 5 && !gameEnd)

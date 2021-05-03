@@ -1,14 +1,27 @@
 ﻿using UnityEngine;
+using Valve.VR;
 
 public class PlayerInput : MonoBehaviour
 {
+    public SteamVR_Action_Vector2 moveVector;
+    public SteamVR_Action_Boolean sprintBool;
+    
     private Vector3 input;
     public Vector3 correctedInput { get; private set; }
 
     public void GetInput()
     {
-        input.x = Input.GetAxis("Horizontal");
-        input.z = Input.GetAxis("Vertical");
+        if (GameManager.instance.VRActive)
+        {
+            input.x = moveVector.axis.x;
+            input.z = moveVector.axis.y;
+        }
+        else
+        {
+            input.x = Input.GetAxis("Horizontal");
+            input.z = Input.GetAxis("Vertical");
+        }
+        
 
         Transform playerTransform = transform;
         var forward = playerTransform.forward;

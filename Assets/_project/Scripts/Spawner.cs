@@ -5,6 +5,7 @@ class Spawner : MonoBehaviour
 {
     [SerializeField] private GameObject monsterPrefab;
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject vrPlayerPrefab;
     [SerializeField] private Transform spawnContainer;
         
     List<Transform> spawnPoints = new List<Transform>();
@@ -24,7 +25,7 @@ class Spawner : MonoBehaviour
     }
     private Player SpawnPlayer(Vector3 pos)
     {
-        GameObject temp = Instantiate(playerPrefab, pos + Vector3.up, Quaternion.identity);
+        GameObject temp = Instantiate(GameManager.instance.VRActive ? vrPlayerPrefab : playerPrefab, pos + Vector3.up, Quaternion.identity);
         return temp.GetComponent<Player>();
     }
     private Monster SpawnMonster(Vector3 pos)
@@ -39,7 +40,7 @@ class Spawner : MonoBehaviour
         Transform monsterSpawn = spawnPoints[Random.Range(0, spawnPoints.Count)];
         while (playerSpawn == monsterSpawn)
             playerSpawn = spawnPoints[Random.Range(0, spawnPoints.Count)];
-        if (playerPrefab != null)
+        if (playerPrefab != null || vrPlayerPrefab != null)
             SpawnPlayer(playerSpawn.position);
         if (monsterPrefab != null)
             SpawnMonster(monsterSpawn.position);

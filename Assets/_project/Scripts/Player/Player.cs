@@ -1,4 +1,5 @@
 using UnityEngine;
+using Valve.VR;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerInput))]
@@ -8,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float sprintRecoverySpeed = 0.5f;
     [SerializeField] private float sprintUseSpeed = 0.5f;
     public bool enableMovement = true;
+    public SteamVR_Action_Boolean sprintBool;
     private PlayerMovement _movement;
     private PlayerInput _input;
     private bool jumping;
@@ -26,8 +28,8 @@ public class Player : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Space) && GameManager.instance.allowJump)
             jumping = true;
-        
-        sprinting = Input.GetKey(KeyCode.LeftShift);
+
+        sprinting = !GameManager.instance.VRActive ? Input.GetKey(KeyCode.LeftShift) : _input.sprintBool.state;
 
         GameManager.instance.sprintStrength = SprintStrength;
     }
