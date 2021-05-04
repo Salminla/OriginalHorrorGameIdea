@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         _rb.velocity = new Vector3(_movement.x, _rb.velocity.y, _movement.z);
+        Debug.Log(_rb.velocity);
     }
     
     public void Jump()

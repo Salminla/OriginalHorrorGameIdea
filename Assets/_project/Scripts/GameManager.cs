@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UiManager _uiManager;
     [SerializeField] private AudioClip bgMusic;
     [SerializeField] private VolumeProfile globalVolume;
-
+    [SerializeField] private bool vr = false;
+    
     public float noteCount = 0;
     public float sprintStrength;
     public bool allowJump;
@@ -39,6 +40,10 @@ public class GameManager : MonoBehaviour
     private void Init()
     {
         VRActive = Convert.ToBoolean(PlayerPrefs.GetInt("vr"));
+        //Application.targetFrameRate = 10;
+#if UNITY_EDITOR
+        VRActive = vr;
+#endif
 
         if (_spawner != null)
             _spawner.HandleSpawning();

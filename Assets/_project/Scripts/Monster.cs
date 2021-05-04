@@ -12,7 +12,7 @@ public class Monster : MonoBehaviour
     private void Start()
     {
         if (player == null)
-            player = FindObjectOfType<Player>();
+            StartCoroutine(GetPlayer());
     }
 
     void Update()
