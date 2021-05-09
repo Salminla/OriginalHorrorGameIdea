@@ -13,15 +13,15 @@ public class Note : MonoBehaviour
     
     void Update()
     {
-        if (player != null)
-        {
-            if (Vector3.Distance(player.transform.position, transform.position) < 2f)
-            {
-                GameManager.instance.noteCount++;
-                AudioManager.instance.Play(paperSound);
-                Destroy(gameObject);
-            }
-        }
+        if (player == null) return;
+        if (!(Vector3.Distance(player.transform.position, transform.position) < 2f)) return;
+        GameManager.instance.noteCount++;
+        if (AudioManager.instance != null)
+            AudioManager.instance.Play(paperSound);
+        else
+            Debug.Log("Audio manager is not present!");
+
+        Destroy(gameObject);
     }
 
     IEnumerator GetPlayer()

@@ -5,17 +5,22 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+    [Header("Buttons")]
     [SerializeField] private Button startButton;
     [SerializeField] private Button vrStartButton;
+    [SerializeField] private Button settingsButton;
     [SerializeField] private Toggle flyToggle;
-
-    private bool flyState;
     
+    [Header("Panels")] 
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject mainPanel;
+
     void Start()
     {
         startButton.onClick.AddListener(StartGame);
         vrStartButton.onClick.AddListener(StartGameVR);
-        flyToggle.onValueChanged.AddListener(delegate(bool arg0) { SetFly(); });
+        settingsButton.onClick.AddListener(OpenSettings);
+        flyToggle.onValueChanged.AddListener(delegate { SetFly(); });
     }
 
     void StartGame()
@@ -32,5 +37,10 @@ public class MenuManager : MonoBehaviour
     void SetFly()
     {
         PlayerPrefs.SetInt("fly", Convert.ToInt16(flyToggle.isOn));
+    }
+
+    void OpenSettings()
+    {
+        settingsPanel.GetComponent<TweenInOut>().OpenUIPanel();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class LookWithMouse : MonoBehaviour
@@ -11,6 +12,8 @@ public class LookWithMouse : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        mouseSensitivity = PlayerPrefs.GetInt("sensitivity", Convert.ToInt32(mouseSensitivity));
     }
 
     void Update()

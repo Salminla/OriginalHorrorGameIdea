@@ -497,11 +497,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dc8388aeaada884bbf23c0dfbc7e92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathScreen: {fileID: 1874464742168814159}
-  finishedScreen: {fileID: 1874464740385999035}
-  sprintValue: {fileID: 1874464740968430541}
-  noteValue: {fileID: 1874464741023291681}
+  deathScreen:
+  - {fileID: 1874464742168814159}
+  finishedScreen:
+  - {fileID: 1874464740385999035}
+  sprintValue:
+  - {fileID: 1874464740968430541}
+  noteValue:
+  - {fileID: 1874464741023291681}
   quitButton: {fileID: 1874464741340220232}
+  uiSystem: {fileID: 0}
 --- !u!1 &1874464741278477961
 GameObject:
   m_ObjectHideFlags: 0

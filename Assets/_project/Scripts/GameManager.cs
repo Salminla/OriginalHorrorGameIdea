@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(QuitGameDelayed());
     }
 
-    public void GameFinish()
+    private void GameFinish()
     {
         gameEnd = true;
         player.enableMovement = false;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Valve.VR;
 
@@ -12,14 +13,19 @@ public class Player : MonoBehaviour
     public SteamVR_Action_Boolean sprintBool;
     private PlayerMovement _movement;
     private PlayerInput _input;
+    private Camera mainCamera;
     private bool jumping;
-    private bool sprinting;
+    private bool holdSprintKey;
     private bool allowSprint = true;
+    private bool sprinting;
     
     private void Start()
     {
         _input = GetComponent<PlayerInput>();
         _movement = GetComponent<PlayerMovement>();
+        mainCamera = Camera.main;
+
+        mainCamera.fieldOfView = PlayerPrefs.GetInt("fov", Convert.ToInt32(mainCamera.fieldOfView));
     }
     
     private void Update()
@@ -29,7 +35,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && GameManager.instance.allowJump)
             jumping = true;
 
-        sprinting = !GameManager.instance.VRActive ? Input.GetKey(KeyCode.LeftShift) : _input.sprintBool.state;
+        holdSprintKey = !GameManager.instance.VRActive ? Input.GetKey(KeyCode.LeftShift) : _input.sprintBool.state;
 
         GameManager.instance.sprintStrength = SprintStrength;
     }
@@ -37,7 +43,8 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         if (!enableMovement) return;
-        _movement.Walk();
+        if (!sprinting)
+            _movement.Walk();
         if (jumping)
         {
             jumping = false;
@@ -49,22 +56,20 @@ public class Player : MonoBehaviour
     void SprintStates()
     {
         SprintStrength = Mathf.Clamp(SprintStrength, 0f, 100f);
-        if (sprinting && allowSprint)
+        if (holdSprintKey && allowSprint)
         {
+            sprinting = true;
             _movement.Sprint();
             SprintStrength -= sprintUseSpeed;
         }
 
         if (SprintStrength < 1f)
-        {
             allowSprint = false;
-        }
 
-        if (sprinting && allowSprint) return;
+        if (holdSprintKey && allowSprint) return;
+        sprinting = false;
         SprintStrength += sprintRecoverySpeed;
         if (SprintStrength > 50f)
-        {
             allowSprint = true;
-        }
     }
 }

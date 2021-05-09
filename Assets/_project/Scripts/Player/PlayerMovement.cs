@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerMovement : MonoBehaviour
@@ -8,11 +8,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 150f;
     [SerializeField] private float sprintSpeed = 200f;
     [SerializeField] private float jumpForce = 100f;
-    [SerializeField] private List<AudioClip> footSteps;
-    
+    [Header("Audio")] 
+    [SerializeField] private AudioSource stepSource;
+    [SerializeField] private List<AudioClip> footStepClips;
+    [SerializeField] private float runSoundDelayAdjust = 0.8f;
+
     private Vector3 _movement;
     private Rigidbody _rb;
     private  PlayerInput _input;
+
+    private bool playingStepSound;
+    private bool stepPlayed;
     
     private void Start()
     {
@@ -23,19 +29,21 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         _rb.velocity = new Vector3(_movement.x, _rb.velocity.y, _movement.z);
-        Debug.Log(_rb.velocity);
+        
+        if (footStepClips != null)
+            PlayStepSound();
     }
     
     public void Jump()
     {
-        _rb.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
+        _rb.AddForce(Vector3.up * (jumpForce * Time.deltaTime), ForceMode.Impulse);
     }
     
     public void Walk()
     {
         _movement.x = _input.correctedInput.x * moveSpeed * Time.deltaTime;
         _movement.z = _input.correctedInput.z * moveSpeed * Time.deltaTime;
-        //PlayStepSound();
+
         Movement();
     }
     
@@ -46,12 +54,21 @@ public class PlayerMovement : MonoBehaviour
 
         Movement();
     }
-
     void PlayStepSound()
     {
-        if ((Mathf.Abs(_rb.velocity.x) > 1f || Mathf.Abs(_rb.velocity.z) > 1f) && !AudioManager.instance.effectsSource.isPlaying)
+        float delayFinal = Mathf.Abs(_rb.velocity.magnitude) / 10 - runSoundDelayAdjust;
+        if (_rb.velocity.magnitude > 0.5f && !playingStepSound)
         {
-            AudioManager.instance.Play(footSteps[Random.Range(0,2)]);
+            playingStepSound = true;
+            StartCoroutine(StepDelay(Mathf.Abs(delayFinal)));
         }
+    }
+    IEnumerator StepDelay(float delay)
+    {
+        stepSource.PlayOneShot(stepPlayed ? footStepClips[0] : footStepClips[1]);
+        //AudioManager.instance.Play(stepPlayed ? footSteps[0] : footSteps[1]);
+        stepPlayed = !stepPlayed;
+        yield return new WaitForSeconds(delay);
+        playingStepSound = false;
     }
 }
