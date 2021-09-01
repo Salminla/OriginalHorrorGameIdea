@@ -3,15 +3,21 @@ using Valve.VR;
 
 public class PlayerInput : MonoBehaviour
 {
-    public SteamVR_Action_Vector2 moveVector;
+    SteamVR_Action_Vector2 moveVector;
     public SteamVR_Action_Boolean sprintBool;
     
     private Vector3 input;
     public Vector3 correctedInput { get; private set; }
 
+    private void Start()
+    {
+        moveVector = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("Move");
+        sprintBool = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("Sprint");
+    }
+
     public void GetInput()
     {
-        if (GameManager.instance.VRActive)
+        if (GameManager.instance != null && GameManager.instance.VRActive)
         {
             input.x = moveVector.axis.x;
             input.z = moveVector.axis.y;

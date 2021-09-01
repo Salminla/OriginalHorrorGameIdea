@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float sprintRecoverySpeed = 0.5f;
     [SerializeField] private float sprintUseSpeed = 0.5f;
     public bool enableMovement = true;
-    public SteamVR_Action_Boolean sprintBool;
     private PlayerMovement _movement;
     private PlayerInput _input;
     private Camera mainCamera;
@@ -25,6 +24,7 @@ public class Player : MonoBehaviour
         _movement = GetComponent<PlayerMovement>();
         mainCamera = Camera.main;
 
+        // TODO move to conf file
         mainCamera.fieldOfView = PlayerPrefs.GetInt("fov", Convert.ToInt32(mainCamera.fieldOfView));
     }
     
@@ -45,6 +45,10 @@ public class Player : MonoBehaviour
         if (!enableMovement) return;
         if (!sprinting)
             _movement.Walk();
+        else
+        {
+            _movement.Sprint();
+        }
         if (jumping)
         {
             jumping = false;
@@ -59,7 +63,7 @@ public class Player : MonoBehaviour
         if (holdSprintKey && allowSprint)
         {
             sprinting = true;
-            _movement.Sprint();
+           // _movement.Sprint();
             SprintStrength -= sprintUseSpeed;
         }
 

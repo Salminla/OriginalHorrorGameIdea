@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     {
         if (player.GetComponent<AudioSource>() == null) return;
         AudioSource[] sources = player.GetComponents<AudioSource>();
+        
+        if (AudioManager.instance == null) return;
         AudioManager.instance.musicSource = sources[0];
         AudioManager.instance.effectsSource = sources[1];
         AudioManager.instance.PlayMusic(bgMusic, true);

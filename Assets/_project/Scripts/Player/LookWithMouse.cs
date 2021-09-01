@@ -12,7 +12,8 @@ public class LookWithMouse : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
+        
+        // TODO move to conf file
         mouseSensitivity = PlayerPrefs.GetInt("sensitivity", Convert.ToInt32(mouseSensitivity));
     }
 

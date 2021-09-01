@@ -4,15 +4,20 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class RandomizeTrees : MonoBehaviour
 {
-    [SerializeField] private GameObject treeContainer;
+    [SerializeField] private GameObject[] treeContainer;
     private List<GameObject> trees;
 
     private void GetTrees()
     {
-        for (int i = 0; i < treeContainer.transform.childCount; i++)
+        trees.Clear();
+        foreach (var container in treeContainer)
         {
-            trees.Add(treeContainer.transform.GetChild(i).gameObject);
+            for (int i = 0; i < container.transform.childCount; i++)
+            {   
+                trees.Add(container.transform.GetChild(i).gameObject);
+            }
         }
+        
     }
     [ContextMenu("Randomize")]
     public void RandomizeTreeParams()
