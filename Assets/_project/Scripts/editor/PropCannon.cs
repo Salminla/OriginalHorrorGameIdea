@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -11,19 +12,23 @@ public class PropCannon : EditorWindow
     [MenuItem("Tools/Prop Cannon")]
     public static void OpenCannon() => GetWindow<PropCannon>();
 
+    public GameObject spawnPrefab;
     public float radius = 2f;
     public int spawnCount = 8;
 
     private SerializedObject so;
+    private SerializedProperty propSpawnPrefab;
     private SerializedProperty propRadius;
     private SerializedProperty propSpawnCount;
 
+    private bool spawnObject = false;
     private Vector2[] randPoints;
 
     private void OnEnable()
     {
         so = new SerializedObject(this);
-        
+
+        propSpawnPrefab = so.FindProperty("spawnPrefab");
         propRadius = so.FindProperty("radius");
         propSpawnCount = so.FindProperty("spawnCount");
         GenerateRandomPoints();
@@ -44,6 +49,7 @@ public class PropCannon : EditorWindow
     private void OnGUI()
     {
         so.Update();
+        EditorGUILayout.PropertyField(propSpawnPrefab);
         EditorGUILayout.PropertyField(propRadius);
         propRadius.floatValue = propRadius.floatValue.AtLeast( 1 );
         EditorGUILayout.PropertyField(propSpawnCount);
@@ -79,7 +85,7 @@ public class PropCannon : EditorWindow
         bool holdingAlt = (Event.current.modifiers & EventModifiers.Alt) != 0;
 
         // change radius
-        if (Event.current.type == EventType.ScrollWheel && !holdingAlt)
+        if (Event.current.type == EventType.ScrollWheel && !holdingAlt )
         {
             float scrollDir = Mathf.Sign(Event.current.delta.y);
             
@@ -89,6 +95,8 @@ public class PropCannon : EditorWindow
             Repaint(); // update editor window
             Event.current.Use(); // consume the event, don't let it fall through
         }
+
+        
 
         Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
         // Ray ray = new Ray(camTransform.position, camTransform.forward);
@@ -108,6 +116,8 @@ public class PropCannon : EditorWindow
                 
                 return new Ray(rayOrigin, rayDirection);
             }
+
+            List<RaycastHit> hitPts = new List<RaycastHit>();
             
             // drawing the points
             foreach (Vector2 point in randPoints)
@@ -117,11 +127,24 @@ public class PropCannon : EditorWindow
                 // raycast to find point on surface
                 if (Physics.Raycast( ptRay, out RaycastHit ptHit ))
                 {
+                    hitPts.Add( ptHit );
+                    /* Old way
+                    // spawn at this point
+                    if (spawnObject)
+                        TrySpawnPrefab(ptHit.point);
+                    */
                     // draw sphere and normal on surface
                     DrawSphere(ptHit.point);
                     Handles.DrawAAPolyLine(ptHit.point, ptHit.point + ptHit.normal);
                 }
             }
+            
+            // spawn on press
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Space)
+            {
+                TrySpawnPrefab( hitPts );
+            }
+            
             Handles.color = Color.red;
             Handles.DrawAAPolyLine( 4,hit.point, hit.point + hitTangent );
             Handles.color = Color.green;
@@ -155,5 +178,28 @@ public class PropCannon : EditorWindow
 
             //Handles.DrawAAPolyLine( 4,hit.point, hit.point + hit.normal );
         }
+    }
+
+    private void TrySpawnPrefab(List<RaycastHit> hitPts)
+    {
+        if (spawnPrefab == null)
+            return;
+
+
+        foreach (var hit in hitPts)
+        {
+            // spawn prefab
+            Quaternion rot = Quaternion.LookRotation(hit.normal);
+            GameObject gameObject = (GameObject)PrefabUtility.InstantiatePrefab(spawnPrefab);
+            Undo.RegisterCreatedObjectUndo(gameObject, "Spawn Objects");
+            gameObject.transform.position = hit.point;
+            gameObject.transform.rotation = rot;
+            //Instantiate(spawnPrefab, hit.point, rot);
+        }
+        
+        
+        Quaternion randomRot = Random.rotation;
+        //GameObject obj = Instantiate(spawnPrefab, position, Quaternion.Euler(randomRot.eulerAngles.y * Vector3.up));
+        //Undo.RegisterCreatedObjectUndo(obj, "spawned");
     }
 }
